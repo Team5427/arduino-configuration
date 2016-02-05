@@ -1,4 +1,5 @@
 #include <Adafruit_NeoPixel.h>
+//#include "Timer.h"
 #ifdef __AVR__
   #include <avr/power.h>
 #endif
@@ -19,9 +20,12 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, PIN, NEO_GRB + NEO_KHZ800);
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
+//Timer t:
 
 int colorMode = 0; //0 will make it solid red, 1 will run the test program
-int analogVal = 0; //changes when anything is connected to analog pin 0
+int digitalVal = 0; //changes when anything is connected to analog pin 0
+int ledPin = 4;
+int lastCheck = HIGH; //for pinCheck() method
 
 void setup() {
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -30,41 +34,61 @@ void setup() {
   #endif
   // End of trinket special code
 
-  Serial.begin(9600);     // Opens serial port, sets data rate to 9600 bps (Idk what bps should be)  
+  Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps (Idk what bps should be)  
   strip.begin();
-  strip.show(); // Initialize all pixels to 'off'
+  strip.show(); //initialize all pixels to 'off'
+
+  pinMode(ledPin, INPUT_PULLUP); //sets the digital pin as input with pullup resistor
 }
 
 void loop() {
-    analogVal = analogRead(0); //reading analog pin 0
-    Serial.println(analogVal);
+  //t.update();
+  digitalVal = digitalRead(ledPin);
     
-    if(analogVal > 900)  {
-      colorMode = 1;
-    }
-      
-    if(colorMode == 1)  {
+    if(digitalVal == LOW)  {
       //test program
       colorWipe(strip.Color(255, 0, 0), 50); // Red
+      pinCheck();
       colorWipe(strip.Color(0, 255, 0), 50); // Green
-      colorWipe(strip.Color(0, 0, 255), 50); // Blue
+      pinCheck();
+      colorWipe(strip.Color(10, 50, 255), 50); // Blue
+      pinCheck();
       colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
+      pinCheck();
 
       theaterChase(strip.Color(127, 127, 127), 50); // White
+      pinCheck();
       theaterChase(strip.Color(127, 0, 0), 50); // Red
+      pinCheck();
       theaterChase(strip.Color(0, 0, 127), 50); // Blue
+      pinCheck();
 
       rainbow(20);
+      pinCheck();
       rainbowCycle(20);
+      pinCheck();
       theaterChaseRainbow(50);
+      pinCheck();
     }
     else  {
       //solid color
-      
       //setColor(strip.Color(0, 255, 0)); // Green
       setColor(strip.Color(10, 50, 255)); // Blue
+      while(true) {
+        pinCheck();
+      }
       //setColor(strip.Color(255, 0, 0)); // Red
     }
+}
+
+void pinCheck() {
+  digitalVal = digitalRead(ledPin); //reading digital pin 4
+
+  if(lastCheck != digitalVal)  {
+    loop();
+  }
+
+  lastCheck = digitalVal;
 }
 
 // 
