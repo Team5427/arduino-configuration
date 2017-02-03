@@ -23,7 +23,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(24, PIN, NEO_GRB + NEO_KHZ800);
 // on a live circuit...if you must, connect GND first.
 
 int digitalVal; //HIGH when nothing is in the pin, LOW when something is
-int ledPin = 4;
+int ledPin = 6;
 
 void setup() {
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
