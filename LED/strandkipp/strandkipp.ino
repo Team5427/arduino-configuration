@@ -42,19 +42,39 @@ void setup() {
 }
 
 void loop() {
-  digitalVal = digitalRead(ledPin);
+  // code to make the red LED on the arduino blink
+  for (int i = 0; i < 1; ++i) {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
+  }
+
+  for (int i = 0; i < 3; ++i) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+  }
+
+  delay(3000);
+  
+  Serial.print("looping");
+
+  // code to make the LED ring green
+  //digitalVal = digitalRead(ledPin);
     
-    if(digitalVal == HIGH)  {
+    //if(digitalVal == HIGH)  {
       //solid color
       
       setColor(strip.Color(0, 255, 30)); //Green
       //setColor(strip.Color(10, 50, 255)); //Blue
       //setColor(strip.Color(255, 0, 0)); //Red
       loop();
-    }
-    else if(digitalVal == LOW)  {
+    //}
+    //else if(digitalVal == LOW)  {
       ///testProgram();
-    }
+    //}
     //loop();
 }
 
