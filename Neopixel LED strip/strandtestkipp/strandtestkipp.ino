@@ -3,6 +3,7 @@
   #include <avr/power.h>
 #endif
 
+// Don't use PIN 13, it's for the onboard LED
 #define PIN 6
 
 // Parameter 1 = number of pixels in strip
@@ -15,6 +16,8 @@
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
+uint8_t pixels;
+
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
 // and minimize distance between Arduino and first pixel.  Avoid connecting
@@ -22,9 +25,9 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-//  #if defined (__AVR_ATtiny85__)
-//    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-//  #endif
+  #if defined (__AVR_ATtiny85__)
+    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+  #endif
   // End of trinket special code
 
 
@@ -33,20 +36,226 @@ void setup() {
 }
 
 void loop() {
+
+    reset();
+
+    buildUp();
+       reset();
+      teamNumber();
+       reset();
+       for(int i=0;i<5;i++){
+    colorShoot(55,10);
+       }
+       reset();
+       //broken, stops loop
+    bounce();
+    reset();
+    redBlue();
+   reset();
+   //broken, stops loop
+    bounceBall();
+    reset();
+    
+    pixels = strip.getPixels();
   // Some example procedures showing how to display to the pixels:
   colorWipe(strip.Color(255, 0, 0), 50); // Red
   colorWipe(strip.Color(0, 255, 0), 50); // Green
   colorWipe(strip.Color(0, 0, 255), 50); // Blue
-//colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
-  // Send a theater pixel chase in...
+colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
+//  // Send a theater pixel chase in...
   theaterChase(strip.Color(127, 127, 127), 50); // White
   theaterChase(strip.Color(127, 0, 0), 50); // Red
   theaterChase(strip.Color(0, 0, 127), 50); // Blue
 
-  rainbow(20);
-  rainbowCycle(20);
-  theaterChaseRainbow(50);
+//  rainbow(20);
+//  rainbowCycle(20);
+//  theaterChaseRainbow(50);
+    loop();
 }
+void reset(){
+//  for(uint16_t i=0; i<strip.numPixels(); i++) {
+//     strip.setPixelColor(i,40); 
+//  }
+//  strip.show();  
+//  
+//  delay(200);
+   for(uint16_t i=0; i<strip.numPixels(); i++) {
+     strip.setPixelColor(i,0); 
+  }
+   strip.show();
+//   delay(200);
+}
+
+//straight up
+void buildUp(){
+      
+     int foo [90] = {74, 99, 244, 111, 238, 254, 163, 198, 112, 85, 201, 88, 235, 137, 164, 232, 97, 135, 81, 35, 44, 210, 217, 102, 204, 247, 152, 30, 166, 28, 124, 31, 86, 8, 138, 0, 190, 22, 7, 67, 161, 79, 36, 197, 75, 61, 121, 159, 246, 250, 24, 181, 123, 127, 77, 189, 3, 82, 69, 143, 55, 162, 237, 5, 25, 125, 84, 211, 141, 222, 249, 20, 23, 17, 228, 41, 130, 175, 187, 184, 229, 242, 54, 13, 216, 19, 215, 145, 146, 46}; 
+     for(uint16_t i=0; i<strip.numPixels()/2; i++) {
+       strip.setPixelColor(i,foo[i*3+0],foo[i*3+1],foo[i*3+2]);
+        strip.setPixelColor(59-i,foo[i*3+0],foo[i*3+1],foo[i*3+2]);
+        strip.show();
+        delay(200);
+     }
+}
+void bounceBall(){
+  //go up
+   for(uint16_t i=0; i<strip.numPixels()/2; i++) {
+        strip.setPixelColor(i,150,0,0);
+        strip.setPixelColor(59-i,150,0,0);
+        if(i!=0){
+         strip.setPixelColor(i-1,0);
+        strip.setPixelColor(59-(i-1),0);
+        }
+        
+        strip.show();
+        delay(50*(i*.12));
+   }
+
+   //go down
+    for(uint16_t i=strip.numPixels()/2-1; i>0; i--) {
+        strip.setPixelColor(i,0,0,150);
+        strip.setPixelColor(59-i,0,0,150);
+        
+        if(i!=29){
+         strip.setPixelColor(i+1,0);
+          strip.setPixelColor(59-(i+1),0);
+        }
+        
+        strip.show();
+       
+        delay(50*(i*.12));
+   }
+    
+}
+void redBlue(){
+  for(uint16_t i=0; i<strip.numPixels()/2; i++) {
+    strip.setPixelColor(i,150,0,0);
+    strip.setPixelColor(59-i,150,0,0);
+    strip.show();
+     delay(50);
+  }
+  delay(100);
+  
+  for(uint16_t i=0; i<strip.numPixels()/2; i++) {
+    strip.setPixelColor(i,0,0,150);
+    strip.setPixelColor(59-i,0,0,150);
+    strip.show();
+     delay(50);
+  }
+  delay(100);
+}
+void teamNumber(){
+    delay(1000);
+    int r1 = 255;
+    int r2 = 0;
+    int r3 = 0;
+    strip.setPixelColor(29,r1,r2,r3);
+    strip.setPixelColor(30,r1,r2,r3);
+     strip.setPixelColor(28,r1,r2,r3);
+    strip.setPixelColor(31,r1,r2,r3);
+     strip.setPixelColor(27,r1,r2,r3);
+    strip.setPixelColor(32,r1,r2,r3);
+     strip.setPixelColor(26,r1,r2,r3);
+    strip.setPixelColor(33,r1,r2,r3);
+     strip.setPixelColor(25,r1,r2,r3);
+    strip.setPixelColor(34,r1,r2,r3);
+    strip.show();
+    delay(1000);
+
+    r1 = 0;
+    r2 = 0;
+    r3 = 255;
+     strip.setPixelColor(20,r1,r2,r3);
+    strip.setPixelColor(39,r1,r2,r3);
+     strip.setPixelColor(19,r1,r2,r3);
+    strip.setPixelColor(40,r1,r2,r3);
+     strip.setPixelColor(18,r1,r2,r3);
+    strip.setPixelColor(41,r1,r2,r3);
+     strip.setPixelColor(17,r1,r2,r3);
+    strip.setPixelColor(42,r1,r2,r3);
+    strip.show();
+    delay(1000);
+
+     r1 = 255;
+    r2 = 0;
+    r3 = 0;
+     strip.setPixelColor(12,r1,r2,r3);
+    strip.setPixelColor(47,r1,r2,r3);
+     strip.setPixelColor(11,r1,r2,r3);
+    strip.setPixelColor(48,r1,r2,r3);
+    strip.show();
+    delay(1000);
+
+    r1 = 0;
+    r2 = 0;
+    r3 = 255;
+    strip.setPixelColor(6,r1,r2,r3);
+    strip.setPixelColor(53,r1,r2,r3);
+     strip.setPixelColor(5,r1,r2,r3);
+    strip.setPixelColor(54,r1,r2,r3);
+     strip.setPixelColor(4,r1,r2,r3);
+    strip.setPixelColor(55,r1,r2,r3);
+     strip.setPixelColor(3,r1,r2,r3);
+    strip.setPixelColor(56,r1,r2,r3);
+     strip.setPixelColor(2,r1,r2,r3);
+    strip.setPixelColor(57,r1,r2,r3);
+     strip.setPixelColor(1,r1,r2,r3);
+    strip.setPixelColor(58,r1,r2,r3);
+       strip.setPixelColor(0,r1,r2,r3);
+    strip.setPixelColor(59,r1,r2,r3);
+      strip.show();
+    delay(3000);
+    
+}
+void colorShoot(uint32_t c, uint8_t wait) {
+    // less than 30th pixel
+   for(uint16_t i=0; i<strip.numPixels()/2; i++) {
+      c=c+1;
+       strip.setPixelColor(i, 0,0,c);
+      strip.setPixelColor(59-i,0,0,c);
+       strip.show();
+      delay(wait);
+      //turn prev pixel off
+      if(i!=0){
+        strip.setPixelColor(i-1, 0);
+        strip.setPixelColor(59-(i-1),0);
+      }
+      strip.show();
+      delay(wait);
+   }
+   //set the top two pixels to 0
+   strip.setPixelColor(29, 0);
+   strip.setPixelColor(30,0);
+}
+void bounce(){
+   for(uint16_t i=4; i<strip.numPixels(); i++){
+         for(uint16_t i1=0; i1<strip.numPixels(); i1++) {
+            strip.setPixelColor(i1,70,0,0);
+         }
+        strip.setPixelColor(i,0,0,255);
+        strip.setPixelColor(i-1,0,0,255);
+        strip.setPixelColor(i-2,0,0,255);
+        strip.setPixelColor(i-3,0,0,255);
+        strip.setPixelColor(i-4,0,0,255);
+        strip.show();
+        
+        delay(50);
+   }
+   for(uint16_t i=55; i>0; i--){ 
+      for(uint16_t i1=0; i1<strip.numPixels(); i1++) {
+            strip.setPixelColor(i1,70,0,0);
+         }
+        strip.setPixelColor(i,0,0,255);
+        strip.setPixelColor(i+1,0,0,255);
+        strip.setPixelColor(i+2,0,0,255);
+        strip.setPixelColor(i+3,0,0,255);
+        strip.setPixelColor(i+4,0,0,255);
+        strip.show();
+
+        delay(50);  
+   }
+}
+
 
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
